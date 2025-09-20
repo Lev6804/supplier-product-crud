@@ -30,22 +30,30 @@ exports.store = async (req, res) => {
   }
 };
 
-// Form sửa sản phẩm
+// Form sửa
 exports.edit = async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  const suppliers = await Supplier.find();
-  res.render('products/edit', { product, suppliers });
+  try {
+    const product = await Product.findById(req.params.id);
+    const suppliers = await Supplier.find(); // để chọn lại supplier
+    res.render('products/edit', { product, suppliers });
+  } catch (err) {
+    res.status(500).send("❌ Lỗi khi load form edit product");
+  }
 };
 
-// Cập nhật sản phẩm
+// Cập nhật
 exports.update = async (req, res) => {
-  await Product.findByIdAndUpdate(req.params.id, {
-    name: req.body.name,
-    address: req.body.address,
-    phone: req.body.phone,
-    supplierId: req.body.supplierId
-  });
-  res.redirect('/products');
+  try {
+    await Product.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      address: req.body.address,
+      phone: req.body.phone,
+      supplierId: req.body.supplierId
+    });
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send("❌ Lỗi khi update product");
+  }
 };
 
 // Xóa sản phẩm
